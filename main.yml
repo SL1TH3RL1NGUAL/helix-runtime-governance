@@ -1,0 +1,32 @@
+cat << 'EOF' > .github/workflows/main.yml
+name: Helix Governance CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate-governance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate directory structure
+        run: |
+          echo "Validating Helix Runtime Governance structure..."
+          test -d CONSTITUTION
+          test -d RUNTIME
+          test -d GOVERNANCE
+          test -d RADIUS
+          test -d DOCS
+          echo "Structure OK."
+
+      - name: Markdown Lint
+        uses: avto-dev/markdown-lint@v1
+        with:
+          config: .markdownlint.yml
+          args: '**/*.md'
+EOF
